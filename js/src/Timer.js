@@ -1,76 +1,85 @@
-var Factory, assertType, clampValue;
-
-require("lotus-require");
+var Type, assertType, clampValue, type;
 
 assertType = require("type-utils").assertType;
 
 clampValue = require("clampValue");
 
-Factory = require("factory");
+Type = require("Type");
 
-module.exports = Factory("Timer", {
-  initArguments: function(delay, callback) {
-    assertType(delay, Number);
-    assertType(callback, Function);
-    return arguments;
-  },
-  customValues: {
-    isActive: {
-      get: function() {
-        return this._id != null;
-      }
-    },
-    elapsedTime: {
-      get: function() {
-        var finished;
-        finished = this._finished;
-        if (finished == null) {
-          finished = Date.now();
-        }
-        return finished - this._began;
-      }
-    },
-    progress: {
-      get: function() {
-        var progress;
-        progress = this.elapsedTime / this.delay;
-        return clampValue(progress, 0, 1);
-      }
+type = Type("Timer");
+
+type.argumentTypes = {
+  delay: Number,
+  callback: Function
+};
+
+type.defineProperties({
+  isActive: {
+    get: function() {
+      return this._id != null;
     }
   },
-  initFrozenValues: function(delay) {
-    return {
-      delay: delay
-    };
+  elapsedTime: {
+    get: function() {
+      var endTime;
+      endTime = this._endTime;
+      if (endTime == null) {
+        endTime = Date.now();
+      }
+      return endTime - this._startTime;
+    }
   },
-  initValues: function(delay, callback) {
-    return {
-      _began: null,
-      _id: null,
-      _callback: (function(_this) {
-        return function() {
-          if (_this._id == null) {
-            return;
-          }
-          _this._id = null;
-          _this._finished = Date.now();
-          return callback();
-        };
-      })(this)
-    };
-  },
-  init: function() {
-    this._began = Date.now();
-    return this._id = setTimeout(this._callback, this.delay);
-  },
+  progress: {
+    get: function() {
+      var progress;
+      progress = this.elapsedTime / this.delay;
+      return clampValue(progress, 0, 1);
+    }
+  }
+});
+
+type.defineFrozenValues({
+  delay: function(delay) {
+    return delay;
+  }
+});
+
+type.defineValues({
+  _id: null,
+  _startTime: null,
+  _endTime: null,
+  _callback: function(_, callback) {
+    return (function(_this) {
+      return function() {
+        if (_this._id === null) {
+          return;
+        }
+        _this._endTime = Date.now();
+        _this._callback = null;
+        _this._id = null;
+        return callback();
+      };
+    })(this);
+  }
+});
+
+type.initInstance(function() {
+  this._startTime = Date.now();
+  return this._id = setTimeout(this._callback, this.delay);
+});
+
+type.defineMethods({
   prevent: function() {
-    if (this._id == null) {
+    if (this._id === null) {
       return;
     }
     clearTimeout(this._id);
+    this._endTime = Date.now();
+    this._callback = null;
     this._id = null;
-    this._finished = Date.now();
   }
 });
+
+module.exports = type.build();
 
 //# sourceMappingURL=../../map/src/Timer.map
