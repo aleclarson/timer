@@ -1,7 +1,6 @@
 
-{ assertType } = require "type-utils"
-
 clampValue = require "clampValue"
+getArgProp = require "getArgProp"
 Type = require "Type"
 
 type = Type "Timer"
@@ -26,7 +25,7 @@ type.defineProperties
 
 type.defineFrozenValues
 
-  delay: (delay) -> delay
+  delay: getArgProp 0
 
 type.defineValues
 
@@ -36,7 +35,7 @@ type.defineValues
 
   _endTime: null
 
-  _callback: (_, callback) -> =>
+  _callback: (delay, callback) -> =>
     return if @_id is null
     @_endTime = Date.now()
     @_callback = null

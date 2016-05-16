@@ -1,8 +1,8 @@
-var Type, assertType, clampValue, type;
-
-assertType = require("type-utils").assertType;
+var Type, clampValue, getArgProp, type;
 
 clampValue = require("clampValue");
+
+getArgProp = require("getArgProp");
 
 Type = require("Type");
 
@@ -39,16 +39,14 @@ type.defineProperties({
 });
 
 type.defineFrozenValues({
-  delay: function(delay) {
-    return delay;
-  }
+  delay: getArgProp(0)
 });
 
 type.defineValues({
   _id: null,
   _startTime: null,
   _endTime: null,
-  _callback: function(_, callback) {
+  _callback: function(delay, callback) {
     return (function(_this) {
       return function() {
         if (_this._id === null) {

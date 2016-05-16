@@ -1,11 +1,11 @@
 {
   "name": "timer",
-  "version": "1.0.0",
-  "main": "./js/src/Timer",
+  "version": "2.0.0",
+  "main": "js/src/Timer",
   "dependencies": {
     "Type": "aleclarson/Type#1.0.0",
     "clampValue": "aleclarson/clampValue#1.0.0",
-    "type-utils": "aleclarson/type-utils#1.0.0"
+    "getArgProp": "aleclarson/getArgProp#1.0.0"
   },
   "lotus": {
     "plugins": [
