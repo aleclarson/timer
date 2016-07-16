@@ -1,7 +1,7 @@
 {
   "name": "timer",
   "version": "2.0.0",
-  "main": "js/src/Timer",
+  "main": "js/Timer",
   "dependencies": {
     "Type": "aleclarson/Type#1.0.0",
     "clampValue": "aleclarson/clampValue#1.0.0",
