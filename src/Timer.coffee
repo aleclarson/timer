@@ -1,51 +1,59 @@
 
-require "lotus-require"
-
-{ assertType } = require "type-utils"
-
 clampValue = require "clampValue"
-Factory = require "factory"
+fromArgs = require "fromArgs"
+Type = require "Type"
 
-module.exports = Factory "Timer",
+type = Type "Timer"
 
-  initArguments: (delay, callback) ->
-    assertType delay, Number
-    assertType callback, Function
-    arguments
+type.argumentTypes =
+  delay: Number
+  callback: Function
 
-  customValues:
+type.defineProperties
 
-    isActive: get: ->
-      @_id?
+  isActive: get: ->
+    @_id?
 
-    elapsedTime: get: ->
-      finished = @_finished
-      finished ?= Date.now()
-      finished - @_began
+  elapsedTime: get: ->
+    endTime = @_endTime
+    endTime ?= Date.now()
+    endTime - @_startTime
 
-    progress: get: ->
-      progress = @elapsedTime / @delay
-      clampValue progress, 0, 1
+  progress: get: ->
+    progress = @elapsedTime / @delay
+    clampValue progress, 0, 1
 
-  initFrozenValues: (delay) ->
-    { delay }
+type.defineFrozenValues
 
-  initValues: (delay, callback) ->
-    _began: null
-    _id: null
-    _callback: =>
-      return unless @_id?
-      @_id = null
-      @_finished = Date.now()
-      callback()
+  delay: fromArgs 0
 
-  init: ->
-    @_began = Date.now()
-    @_id = setTimeout @_callback, @delay
+type.defineValues
+
+  _id: null
+
+  _startTime: null
+
+  _endTime: null
+
+  _callback: (delay, callback) -> =>
+    return if @_id is null
+    @_endTime = Date.now()
+    @_callback = null
+    @_id = null
+    callback()
+
+type.initInstance ->
+  @_startTime = Date.now()
+  @_id = setTimeout @_callback, @delay
+
+type.defineMethods
 
   prevent: ->
-    return unless @_id?
+    return if @_id is null
     clearTimeout @_id
+    @_endTime = Date.now()
+    @_callback = null
     @_id = null
-    @_finished = Date.now()
     return
+
+module.exports = type.build()
