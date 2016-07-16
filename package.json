@@ -5,7 +5,7 @@
   "dependencies": {
     "Type": "aleclarson/Type#1.0.0",
     "clampValue": "aleclarson/clampValue#1.0.0",
-    "getArgProp": "aleclarson/getArgProp#1.0.0"
+    "fromArgs": "aleclarson/fromArgs#1.0.0"
   },
   "lotus": {
     "plugins": [

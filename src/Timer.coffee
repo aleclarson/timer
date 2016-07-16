@@ -1,6 +1,6 @@
 
 clampValue = require "clampValue"
-getArgProp = require "getArgProp"
+fromArgs = require "fromArgs"
 Type = require "Type"
 
 type = Type "Timer"
@@ -25,7 +25,7 @@ type.defineProperties
 
 type.defineFrozenValues
 
-  delay: getArgProp 0
+  delay: fromArgs 0
 
 type.defineValues
 
