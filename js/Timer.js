@@ -1,17 +1,15 @@
-var Type, clampValue, fromArgs, type;
+var Type, clampValue, type;
 
 clampValue = require("clampValue");
-
-fromArgs = require("fromArgs");
 
 Type = require("Type");
 
 type = Type("Timer");
 
-type.argumentTypes = {
-  delay: Number,
-  callback: Function
-};
+type.defineArgs({
+  delay: Number.isRequired,
+  callback: Function.isRequired
+});
 
 type.defineProperties({
   isActive: {
@@ -38,8 +36,10 @@ type.defineProperties({
   }
 });
 
-type.defineFrozenValues({
-  delay: fromArgs(0)
+type.defineFrozenValues(function(delay) {
+  return {
+    delay: delay
+  };
 });
 
 type.defineValues({
