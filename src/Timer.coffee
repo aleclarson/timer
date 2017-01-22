@@ -1,13 +1,12 @@
 
 clampValue = require "clampValue"
-fromArgs = require "fromArgs"
 Type = require "Type"
 
 type = Type "Timer"
 
-type.argumentTypes =
-  delay: Number
-  callback: Function
+type.defineArgs
+  delay: Number.isRequired
+  callback: Function.isRequired
 
 type.defineProperties
 
@@ -23,9 +22,7 @@ type.defineProperties
     progress = @elapsedTime / @delay
     clampValue progress, 0, 1
 
-type.defineFrozenValues
-
-  delay: fromArgs 0
+type.defineFrozenValues (delay) -> {delay}
 
 type.defineValues
 
