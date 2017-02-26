@@ -6,17 +6,16 @@ type = Type "Timer"
 
 type.defineArgs [Number, Function]
 
-type.defineProperties
+type.defineGetters
 
-  isActive: get: ->
-    @_id?
+  isActive: -> @_id?
 
-  elapsedTime: get: ->
+  elapsedTime: ->
     endTime = @_endTime
     endTime ?= Date.now()
     endTime - @_startTime
 
-  progress: get: ->
+  progress: ->
     progress = @elapsedTime / @delay
     clampValue progress, 0, 1
 
