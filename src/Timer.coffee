@@ -4,9 +4,7 @@ Type = require "Type"
 
 type = Type "Timer"
 
-type.defineArgs
-  delay: Number.isRequired
-  callback: Function.isRequired
+type.defineArgs [Number, Function]
 
 type.defineProperties
 
