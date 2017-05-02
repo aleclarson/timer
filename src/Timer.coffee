@@ -21,6 +21,20 @@ type.defineGetters
 
 type.defineFrozenValues (delay) -> {delay}
 
+type.defineMethods
+
+  prevent: ->
+    if @_id isnt null
+      clearTimeout @_id
+      @_endTime = Date.now()
+      @_callback = null
+      @_id = null
+      return
+
+#
+# Internal
+#
+
 type.defineValues
 
   _id: null
@@ -39,15 +53,5 @@ type.defineValues
 type.initInstance ->
   @_startTime = Date.now()
   @_id = setTimeout @_callback, @delay
-
-type.defineMethods
-
-  prevent: ->
-    return if @_id is null
-    clearTimeout @_id
-    @_endTime = Date.now()
-    @_callback = null
-    @_id = null
-    return
 
 module.exports = type.build()
