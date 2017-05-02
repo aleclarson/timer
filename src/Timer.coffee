@@ -4,25 +4,36 @@ Type = require "Type"
 
 type = Type "Timer"
 
-type.defineArgs
-  delay: Number.isRequired
-  callback: Function.isRequired
+type.defineArgs [Number, Function]
 
-type.defineProperties
+type.createFrozenValue "delay", (delay) -> delay
 
-  isActive: get: ->
-    @_id?
+type.defineGetters
 
-  elapsedTime: get: ->
+  isActive: -> @_id?
+
+  elapsedTime: ->
     endTime = @_endTime
     endTime ?= Date.now()
     endTime - @_startTime
 
-  progress: get: ->
+  progress: ->
     progress = @elapsedTime / @delay
     clampValue progress, 0, 1
 
-type.defineFrozenValues (delay) -> {delay}
+type.defineMethods
+
+  prevent: ->
+    if @_id isnt null
+      clearTimeout @_id
+      @_endTime = Date.now()
+      @_callback = null
+      @_id = null
+      return
+
+#
+# Internal
+#
 
 type.defineValues
 
@@ -42,15 +53,5 @@ type.defineValues
 type.initInstance ->
   @_startTime = Date.now()
   @_id = setTimeout @_callback, @delay
-
-type.defineMethods
-
-  prevent: ->
-    return if @_id is null
-    clearTimeout @_id
-    @_endTime = Date.now()
-    @_callback = null
-    @_id = null
-    return
 
 module.exports = type.build()
