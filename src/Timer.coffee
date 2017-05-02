@@ -6,6 +6,8 @@ type = Type "Timer"
 
 type.defineArgs [Number, Function]
 
+type.createFrozenValue "delay", (delay) -> delay
+
 type.defineGetters
 
   isActive: -> @_id?
@@ -18,8 +20,6 @@ type.defineGetters
   progress: ->
     progress = @elapsedTime / @delay
     clampValue progress, 0, 1
-
-type.defineFrozenValues (delay) -> {delay}
 
 type.defineMethods
 
